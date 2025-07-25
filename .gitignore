@@ -1,0 +1,38 @@
+
+# Dependencies
+/node_modules
+
+# Environment variables
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# IDE / Editor specific
+.idea/
+.vscode/
+*.swp
+*~
+
+# macOS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+__MACOSX
+.AppleDouble
+.LSOverride
+.AppleDB
+.finderinfo
+Network Trash Folder
+Temporary Items
+
+# Windows thumbnail cache
+Thumbs.db
+ehthumbs.db
