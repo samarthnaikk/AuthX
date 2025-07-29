@@ -2,6 +2,15 @@
 # Dependencies
 /node_modules
 
+# Ignore frontend dependencies
+/frontend/node_modules
+
+# Ignore unused/removed folders and files
+/config/
+/middleware/
+/utils/sendEmail.js
+/docs/
+
 # Environment variables
 .env
 
