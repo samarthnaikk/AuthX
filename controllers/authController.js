@@ -2,7 +2,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-// const sendEmail = require('../utils/sendEmail');
+const sendEmail = require('../utils/sendEmail');
 const crypto = require('crypto');
 
 exports.register = async (req, res) => {
@@ -35,20 +35,20 @@ exports.register = async (req, res) => {
         // Save the user to the database
         await user.save();
 
-        // Send OTP email (DISABLED)
-        // try {
-        //     await sendEmail({
-        //         email: user.email,
-        //         subject: 'Email Verification OTP',
-        //         message: `Your OTP for email verification is: ${otp}`,
-        //     });
-        //     res.status(201).json({ message: 'User registered successfully. Please check your email for the OTP.' });
-        // } catch (error) {
-        //     console.log(error);
-        //     // If email sending fails, we might want to handle it, maybe by deleting the user or marking them as unverified
-        //     return res.status(500).json({ message: 'Error sending email' });
-        // }
-        res.status(201).json({ message: 'User registered successfully. (Email sending disabled)' });
+
+        // Send OTP email using Gmail
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: 'Email Verification OTP',
+                message: `Your OTP for email verification is: ${otp}`,
+            });
+            res.status(201).json({ message: 'User registered successfully. Please check your email for the OTP.' });
+        } catch (error) {
+            console.log(error);
+            // If email sending fails, we might want to handle it, maybe by deleting the user or marking them as unverified
+            return res.status(500).json({ message: 'Error sending email' });
+        }
 
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
@@ -135,22 +135,21 @@ exports.requestPasswordReset = async (req, res) => {
 
         await user.save();
 
-        // Send email (DISABLED)
-        // const resetUrl = `${req.protocol}://${req.get('host')}/api/auth/reset-password/${resetToken}`;
-        // try {
-        //     await sendEmail({
-        //         email: user.email,
-        //         subject: 'Password Reset Request',
-        //         message: `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`,
-        //     });
-        //     res.status(200).json({ message: 'Email sent' });
-        // } catch (error) {
-        //     user.passwordResetToken = undefined;
-        //     user.passwordResetExpires = undefined;
-        //     await user.save();
-        //     return res.status(500).json({ message: 'Error sending email' });
-        // }
-        res.status(200).json({ message: 'Password reset email sending disabled.' });
+        // Send password reset email using Gmail
+        const resetUrl = `${req.protocol}://${req.get('host')}/api/auth/reset-password/${resetToken}`;
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: 'Password Reset Request',
+                message: `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`,
+            });
+            res.status(200).json({ message: 'Email sent' });
+        } catch (error) {
+            user.passwordResetToken = undefined;
+            user.passwordResetExpires = undefined;
+            await user.save();
+            return res.status(500).json({ message: 'Error sending email' });
+        }
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
