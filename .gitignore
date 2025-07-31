@@ -9,7 +9,6 @@
 /config/
 /middleware/
 /utils/sendEmail.js
-/docs/
 
 # Environment variables
 .env
