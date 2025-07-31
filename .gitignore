@@ -45,3 +45,5 @@ Temporary Items
 # Windows thumbnail cache
 Thumbs.db
 ehthumbs.db
+token.pkl
+credentials.json
